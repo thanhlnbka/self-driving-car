@@ -18,7 +18,7 @@ sudo pip3 install scipy
 
 sudo pip3 install xlrd
 
-sudo pip3 install pygame
+sudo pip3 install pygame ( or pip install pygame==2.0.0.dev6 ) 
 
 
 
