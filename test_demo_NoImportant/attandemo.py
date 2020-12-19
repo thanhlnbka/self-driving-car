@@ -29,7 +29,7 @@ def calculate_angle(point_x, point_y, target_x, target_y):
 
 
 my_dir = calculate_angle(1, 1, 1, 2)
-print(my_dir)
+# print(my_dir)
 
 # print(distance_near_dependency(300))
 # print(distance_medium_dependency(350))
@@ -50,5 +50,5 @@ print(my_dir)
 rule_found = [('Far', 1.0), ('Green', 0.8), ('Small', 1.0), 'Fast']
 arguments = rule_found[0:(len(rule_found) - 1)]
 m = [x[1] for x in arguments]
-print (m)
-print (min(m))
+# print (m)
+# print (min(m))

@@ -18,4 +18,4 @@ def result_dependency(x):
 m = 2
 n = 1
 I = quad(result_dependency, 1, 2)
-print(I)
+# print(I)

@@ -6,7 +6,7 @@ from pygame.locals import *
 
 def load_image(file, transparent=True):
     # print("Loading " + file + " ..")
-    fullname = os.path.join("/home/luuthanh/Desktop/fuzzy-logic-project/media", file)
+    fullname = os.path.join("/home/luuthanh/Desktop/BTL-XLTTM/self-driving-car/media", file)
     image = pygame.image.load(fullname)
     if transparent == True:
         image = image.convert()

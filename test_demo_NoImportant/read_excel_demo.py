@@ -11,5 +11,5 @@ with xlrd.open_workbook('media/toa-do.xlsx') as book:
     for i in range(1, len(x_coordinate)):
         MAP_NAVS.append((x_coordinate[i], y_coordinate[i]))
 
-    for i in range(len(MAP_NAVS)):
-        print(MAP_NAVS[i])
+    # for i in range(len(MAP_NAVS)):
+    #     print(MAP_NAVS[i])
