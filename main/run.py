@@ -33,7 +33,7 @@ def button(msg,x,y,w,h,ic,ac,action=None):
     global intro
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
-    
+
     if x+w > mouse[0] > x and y+h > mouse[1] > y:
         pygame.draw.rect(gameDisplay, ac,(x,y,w,h))
         if click[0] == 1 and action != None:
@@ -41,7 +41,8 @@ def button(msg,x,y,w,h,ic,ac,action=None):
                 intro = False
             else:
                 # print("hihi")
-                main_mapx(int(action[3:]))
+                toado = action[4:]
+                main_mapx(int(action[3:4]), toado)
                 
     else:
         pygame.draw.rect(gameDisplay, ic,(x,y,w,h))
@@ -67,27 +68,31 @@ def message_display(text):
 def game_intro():
     global intro
     intro = True
-
+    toado = []
     while intro:
+        pos = pygame.mouse.get_pos()
+        gameDisplay.fill(white)
+        largeText = pygame.font.SysFont("comicsansms",30)
+        TextSurf, TextRect = text_objects("Autonomous vehicle ", largeText)
+        TextRect.center = (1066,52)
+        gameDisplay.blit(TextSurf, TextRect)
+        bg = pygame.image.load("/home/luuthanh/Desktop/BTL-XLTTM/self-driving-car/media/map_ldh_940_640.png")
+        gameDisplay.blit(bg,(0,0))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 intro = False
-        gameDisplay.fill(white)
-        largeText = pygame.font.SysFont("comicsansms",115)
-        TextSurf, TextRect = text_objects("Autonomous vehicle", largeText)
-        TextRect.center = ((display_width/2),(display_height/2))
-        gameDisplay.blit(TextSurf, TextRect)
-        # button("Map 1",100,450,100,50,green,bright_green,action='map1')
-        # button("Map 2",300,450,100,50,green,bright_green,action='map2')
-        # button("Map 3",500,450,100,50,green,bright_green,action='map3')
-        # button("Map 4",700,450,100,50,green,bright_green,action='map4')
-        # button("Quit",900,450,100,50,red,bright_red,'quit')
-        button("Test",500,450,100,50,green,bright_green,action='map7')
-
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if len(toado) <=2:
+                    color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))
+                    pygame.draw.circle(screen, color, pos, 20)
+                    toado.append(pos)
+        # print(toado)
+        button("Demo",1016,450,100,50,green,bright_green,action='map7_{}'.format(toado))
         pygame.display.update()
         clock.tick(15)
+                
 
-def main_mapx(x):
+def main_mapx(x, toado):
     
     clock = pygame.time.Clock()
     running = True
@@ -98,8 +103,9 @@ def main_mapx(x):
     
     map_s = pygame.sprite.Group()
     map_s.add(maps.Map(0, 0, x))
-    print(maps.MAP_NAVS)
-    print(type(maps.MAP_NAVS[0]))
+    # print(toado)
+    # print(maps.MAP_NAVS)
+    # print(type(maps.MAP_NAVS[0]))
     start_x = maps.MAP_NAVS[0][0]
     start_y = maps.MAP_NAVS[0][1]
     maps.FINISH_INDEX = len(maps.MAP_NAVS) - 2
@@ -203,7 +209,8 @@ def main():
 if __name__ == "__main__":
     pygame.init()
 
-    screen = pygame.display.set_mode((1200, 600))
+    screen = pygame.display.set_mode((1200, 640))
+    
     pygame.display.set_caption("BTL_XLTTM")
     pygame.mouse.set_visible(True)
     font = pygame.font.Font(None, 24)
