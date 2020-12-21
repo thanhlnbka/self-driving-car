@@ -1,6 +1,6 @@
 import random, sys, os
 os.environ["DISPLAY"] = ":0"
-sys.path.insert(0,"/home/luuthanh/Desktop/BTL-XLTTM/self-driving-car")
+sys.path.insert(0,"./self-driving-car-main")
 from graphic import camera
 from graphic import maps
 import pygame
@@ -11,6 +11,8 @@ import time
 
 from graphic import car
 from graphic.car import calculate_angle
+import  ast
+
 
 gameDisplay = pygame.display.set_mode((1200, 600))
 black = (0,0,0)
@@ -40,8 +42,7 @@ def button(msg,x,y,w,h,ic,ac,action=None):
             if action == 'quit':
                 intro = False
             else:
-                # print("hihi")
-                toado = action[4:]
+                toado = action[5:]
                 main_mapx(int(action[3:4]), toado)
                 
     else:
@@ -61,7 +62,6 @@ def message_display(text):
     pygame.display.update()
 
     time.sleep(2)
-
     game_loop()
 
 
@@ -72,21 +72,21 @@ def game_intro():
     while intro:
         pos = pygame.mouse.get_pos()
         gameDisplay.fill(white)
-        largeText = pygame.font.SysFont("comicsansms",30)
+        largeText = pygame.font.SysFont("comicsansms",20)
         TextSurf, TextRect = text_objects("Autonomous vehicle ", largeText)
         TextRect.center = (1066,52)
         gameDisplay.blit(TextSurf, TextRect)
-        bg = pygame.image.load("/home/luuthanh/Desktop/BTL-XLTTM/self-driving-car/media/map_ldh_940_640.png")
+        bg = pygame.image.load("./media/map_ldh_940_640.png")
         gameDisplay.blit(bg,(0,0))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 intro = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if len(toado) <=2:
+                if len(toado) < 2:
                     color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))
                     pygame.draw.circle(screen, color, pos, 20)
                     toado.append(pos)
-        # print(toado)
+
         button("Demo",1016,450,100,50,green,bright_green,action='map7_{}'.format(toado))
         pygame.display.update()
         clock.tick(15)
@@ -98,21 +98,17 @@ def main_mapx(x, toado):
     running = True
     one_time = True
     cam = camera.Camera()
-
     stone_impediment = stone.Stone(1200, 800, 90, 0)
     
     map_s = pygame.sprite.Group()
-    map_s.add(maps.Map(0, 0, x))
-    # print(toado)
-    # print(maps.MAP_NAVS)
-    # print(type(maps.MAP_NAVS[0]))
+    map_s.add(maps.Map(0, 0, x, toado))
     start_x = maps.MAP_NAVS[0][0]
     start_y = maps.MAP_NAVS[0][1]
     maps.FINISH_INDEX = len(maps.MAP_NAVS) - 2
 
     traffic_lamp1 = traffic_lamp.TrafficLamp(maps.TRAFFIC_LAMP_COORDINATES[0])
     traffic_lamp2 = traffic_lamp.TrafficLamp(maps.TRAFFIC_LAMP_COORDINATES[1])
-    # print(maps.MAP_NAVS)
+
     start_angle = calculate_angle(maps.MAP_NAVS[0][0],
                                   maps.MAP_NAVS[0][1], maps.MAP_NAVS[1][0], maps.MAP_NAVS[1][1])
 
@@ -152,7 +148,6 @@ def main_mapx(x, toado):
                     maps.TRAFFIC_LAMP_POS = []
                     maps.TRAFFIC_LAMP_COORDINATES = []
                     cars.empty()
-                    # return
                     running=False
 
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:

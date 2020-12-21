@@ -17,9 +17,10 @@ def create_datadict(path_toado = "./etractpoint/map_ledaihanh.txt"):
         m = str(data[i])
         point = m[2:-3].split(",")
         point.append(alfa[i])
-        # print(point)
         data_dict["{}".format(i+1)] = point
     return data_dict
+
+
 def create_datadict_alfa(path_toado = "./etractpoint/map_ledaihanh.txt"):
     global alfa
     with open(path_toado, "rb") as fs:
@@ -29,8 +30,6 @@ def create_datadict_alfa(path_toado = "./etractpoint/map_ledaihanh.txt"):
         m = str(data[i])
         point = m[2:-3].split(",")
         point = [int(i) for i in point]
-        # point.append(alfa[i])
-        # print(point)
         data_dict_alfa["{}".format(alfa[i])] = point
     return data_dict_alfa
 
@@ -50,7 +49,6 @@ def add_graph(path_vitri_alfa = "./etractpoint/map_vitri_alfa.txt"):
             for n in range(1, len(nodes)):
                 distance = dis_points(data_dict_alfa["{}".format(nodes[0])], \
                     data_dict_alfa["{}".format(nodes[n])])
-                # print(nodes[0],nodes[n],distance)
                 graph.add_edge(nodes[0],nodes[n],distance)
 
     return graph
@@ -70,14 +68,25 @@ def convert_alfa():
             with open("etractpoint/map_vitri_alfa.txt","a") as f:
                 f.writelines(str_[:-1] + "\n")
 
+def get_near_point(data_alfa,point):
+    m = 10000
+    for k, v in data_alfa.items():
+        a = dis_points(v, point)
+        if m >= a:
+            m = a
+            point_near = k
+    return point_near
+
 if __name__ == "__main__":
     graph = add_graph()
-    point_start = "c"
-    point_end = "C"
+    point_click = [(895, 582), (225, 25)]
+    point_one = point_click[0]
+    point_two = point_click[1]
     data_alfa = create_datadict_alfa()
+    point_start = get_near_point(data_alfa, point_one)
+    point_end = get_near_point(data_alfa, point_two)
     dijkstra = DijkstraSPF(graph,point_start)
     print(dijkstra.get_path(point_end))
-    print(data_alfa)
     lotrinh = dijkstra.get_path(point_end)
     MAP_NAVS = [tuple(data_alfa[i]) for i in lotrinh ]
     print(MAP_NAVS)
