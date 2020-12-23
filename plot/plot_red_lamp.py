@@ -18,8 +18,8 @@ def lamp_less_red_dependency(time):
     return 0.0
 
 
-time1 = np.arange(0., 6., 0.1)
-time2 = np.arange(3., 20., 0.1)
+time1 = np.arange(0., 4., 0.1)
+time2 = np.arange(3., 5., 0.1)
 
 less_red = [lamp_less_red_dependency(tmp) for tmp in time1]
 red = [lamp_red_dependency(tmp) for tmp in time2]

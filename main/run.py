@@ -72,11 +72,11 @@ def game_intro():
     while intro:
         pos = pygame.mouse.get_pos()
         gameDisplay.fill(white)
-        largeText = pygame.font.SysFont("comicsansms",20)
+        largeText = pygame.font.SysFont("comicsansms",30)
         TextSurf, TextRect = text_objects("Autonomous vehicle ", largeText)
         TextRect.center = (1066,52)
         gameDisplay.blit(TextSurf, TextRect)
-        bg = pygame.image.load("./media/map_ldh_940_640.png")
+        bg = pygame.image.load("./media/map8_940_640.png")
         gameDisplay.blit(bg,(0,0))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -87,13 +87,11 @@ def game_intro():
                     pygame.draw.circle(screen, color, pos, 20)
                     toado.append(pos)
 
-        button("Demo",1016,450,100,50,green,bright_green,action='map7_{}'.format(toado))
+        button("Demo",1016,450,100,50,green,bright_green,action='map8_{}'.format(toado))
         pygame.display.update()
         clock.tick(15)
-                
 
 def main_mapx(x, toado):
-    
     clock = pygame.time.Clock()
     running = True
     one_time = True
@@ -128,8 +126,7 @@ def main_mapx(x, toado):
     cam.set_pos(controlled_car.x, controlled_car.y)
     flag = 0
     pause = False 
-    while running:
-        
+    while running:        
         flag += 1
         keys = pygame.key.get_pressed()
         for event in pygame.event.get():

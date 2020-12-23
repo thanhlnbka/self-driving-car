@@ -106,8 +106,6 @@ class Car(pygame.sprite.Sprite):
     def find_way_direction(self):
         next_nav_index = self.current_nav_index + 1
         next_nav_x, next_nav_y = self.MAP_NAVS[next_nav_index][0], self.MAP_NAVS[next_nav_index][1]
-        # print("current:{}:{}\n".format(self.x, self.y))
-        # print("target:{}:{}".format(next_nav_x, next_nav_y))
         return calculate_angle(self.x, self.y, next_nav_x, next_nav_y)
 
     def calculate_distance_lamp(self):
@@ -117,7 +115,6 @@ class Car(pygame.sprite.Sprite):
                 distance_to_lamp = math.hypot(self.MAP_NAVS[pos][0] - self.x, self.MAP_NAVS[pos][1] - self.y)
                 if self.current_lamp_pos != i:
                     self.current_lamp_pos = i
-
                 return distance_to_lamp
         return 2000
 

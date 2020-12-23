@@ -7,12 +7,12 @@ def draw_circle(event,x,y,flags,param):
     if event == cv2.EVENT_LBUTTONDBLCLK:
         cv2.circle(img,(x,y),5,(255,0,0),-1)
         # print(x,y)
-        with open("etractpoint/map_ledaihanh.txt","a") as fs:
+        with open("etractpoint/map_ledaihanh_map8.txt","a") as fs:
             fs.write("{},{}".format(x,y))
             fs.write("\n")
         mouseX,mouseY = x,y
 
-path = "/home/luuthanh/Desktop/BTL-XLTTM/self-driving-car/media/map_ledaihanh.png"
+path = "/home/luuthanh/Desktop/BTL-XLTTM/self-driving-car/media/map8.png"
 cv2.namedWindow('image')
 cv2.setMouseCallback('image',draw_circle)
 # img = 
