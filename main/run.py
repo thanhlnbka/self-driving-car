@@ -1,6 +1,6 @@
 import random, sys, os
 os.environ["DISPLAY"] = ":0"
-sys.path.insert(0,"./self-driving-car-main")
+sys.path.insert(0,"../self-driving-car-main")
 from graphic import camera
 from graphic import maps
 import pygame
@@ -11,8 +11,6 @@ import time
 
 from graphic import car
 from graphic.car import calculate_angle
-import  ast
-
 
 gameDisplay = pygame.display.set_mode((1200, 600))
 black = (0,0,0)
@@ -41,9 +39,12 @@ def button(msg,x,y,w,h,ic,ac,action=None):
         if click[0] == 1 and action != None:
             if action == 'quit':
                 intro = False
+            elif action == "reset":
+                maps.reset()
+                game_intro()
             else:
-                toado = action[5:]
-                main_mapx(int(action[3:4]), toado)
+                toado_click = action[5:]
+                main_mapx(int(action[3:4]), toado_click)
                 
     else:
         pygame.draw.rect(gameDisplay, ic,(x,y,w,h))
@@ -58,12 +59,8 @@ def message_display(text):
     TextSurf, TextRect = text_objects(text, largeText)
     TextRect.center = ((display_width/2),(display_height/2))
     gameDisplay.blit(TextSurf, TextRect)
-
     pygame.display.update()
-
     time.sleep(2)
-    game_loop()
-
 
 def game_intro():
     global intro
@@ -73,9 +70,18 @@ def game_intro():
         pos = pygame.mouse.get_pos()
         gameDisplay.fill(white)
         largeText = pygame.font.SysFont("comicsansms",30)
+        introText = pygame.font.SysFont("comicsansms",15)
         TextSurf, TextRect = text_objects("Autonomous vehicle ", largeText)
         TextRect.center = (1066,52)
         gameDisplay.blit(TextSurf, TextRect)
+
+        TextIntro1 , TextRect1 = text_objects("B1: Kick chuot de lua chon 2 diem bat ky", introText)
+        TextIntro2, TextRect2 = text_objects("B2: Kick demo de xem kq ", introText)
+        TextRect1.center = (1076, 92)
+        TextRect2.center = (1086, 110)
+        gameDisplay.blit(TextIntro1, TextRect1)
+        gameDisplay.blit(TextIntro2, TextRect2)
+
         bg = pygame.image.load("./media/map8_940_640.png")
         gameDisplay.blit(bg,(0,0))
         for event in pygame.event.get():
@@ -86,12 +92,13 @@ def game_intro():
                     color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))
                     pygame.draw.circle(screen, color, pos, 20)
                     toado.append(pos)
-
         button("Demo",1016,450,100,50,green,bright_green,action='map8_{}'.format(toado))
+        button("Reset", 1016,550,100,50,red, bright_red , action="reset" )
         pygame.display.update()
         clock.tick(15)
 
-def main_mapx(x, toado):
+def main_mapx(x, toado_click):
+    global toado
     clock = pygame.time.Clock()
     running = True
     one_time = True
@@ -99,13 +106,26 @@ def main_mapx(x, toado):
     stone_impediment = stone.Stone(1200, 800, 90, 0)
     
     map_s = pygame.sprite.Group()
-    map_s.add(maps.Map(0, 0, x, toado))
+    map_s.add(maps.Map(0, 0, x, toado_click))
     start_x = maps.MAP_NAVS[0][0]
     start_y = maps.MAP_NAVS[0][1]
     maps.FINISH_INDEX = len(maps.MAP_NAVS) - 2
 
+
+
     traffic_lamp1 = traffic_lamp.TrafficLamp(maps.TRAFFIC_LAMP_COORDINATES[0])
     traffic_lamp2 = traffic_lamp.TrafficLamp(maps.TRAFFIC_LAMP_COORDINATES[1])
+    traffic_lamp3 = traffic_lamp.TrafficLamp(maps.TRAFFIC_LAMP_COORDINATES[2])
+    traffic_lamp4 = traffic_lamp.TrafficLamp(maps.TRAFFIC_LAMP_COORDINATES[3])
+    traffic_lamp5 = traffic_lamp.TrafficLamp(maps.TRAFFIC_LAMP_COORDINATES[4])
+    traffic_lamp6 = traffic_lamp.TrafficLamp(maps.TRAFFIC_LAMP_COORDINATES[5])
+    traffic_lamp7 = traffic_lamp.TrafficLamp(maps.TRAFFIC_LAMP_COORDINATES[6])
+    traffic_lamp8 = traffic_lamp.TrafficLamp(maps.TRAFFIC_LAMP_COORDINATES[7])
+
+
+
+
+
 
     start_angle = calculate_angle(maps.MAP_NAVS[0][0],
                                   maps.MAP_NAVS[0][1], maps.MAP_NAVS[1][0], maps.MAP_NAVS[1][1])
@@ -115,8 +135,17 @@ def main_mapx(x, toado):
     cars = pygame.sprite.Group()
     cars.add(controlled_car)
     traffic_lamps = pygame.sprite.Group()
+
     traffic_lamps.add(traffic_lamp1)
     traffic_lamps.add(traffic_lamp2)
+    traffic_lamps.add(traffic_lamp3)
+    traffic_lamps.add(traffic_lamp4)
+    traffic_lamps.add(traffic_lamp5)
+    traffic_lamps.add(traffic_lamp6)
+    traffic_lamps.add(traffic_lamp7)
+    traffic_lamps.add(traffic_lamp8)
+
+
 
     stones = pygame.sprite.Group()
     stones.add(stone_impediment)
@@ -132,6 +161,7 @@ def main_mapx(x, toado):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+                game_intro()
                 break
             if event.type == pygame.KEYUP:
                 if keys[K_p]:
@@ -181,11 +211,26 @@ def main_mapx(x, toado):
         stones.update(cam.x, cam.y)
         stones.draw(screen)
 
+
+
         lamp_status1 = traffic_lamp1.render(screen)
         lamp_status2 = traffic_lamp2.render(screen)
+        lamp_status3 = traffic_lamp3.render(screen)
+        lamp_status4 = traffic_lamp4.render(screen)
+        lamp_status5 = traffic_lamp5.render(screen)
+        lamp_status6 = traffic_lamp3.render(screen)
+        lamp_status7 = traffic_lamp4.render(screen)
+        lamp_status8 = traffic_lamp5.render(screen)
 
         traffic_lamps_status.append(lamp_status1)
         traffic_lamps_status.append(lamp_status2)
+        traffic_lamps_status.append(lamp_status3)
+        traffic_lamps_status.append(lamp_status4)
+        traffic_lamps_status.append(lamp_status5)
+        traffic_lamps_status.append(lamp_status6)
+        traffic_lamps_status.append(lamp_status7)
+        traffic_lamps_status.append(lamp_status8)
+
         # update and render car
         check = cars.update(cam.x, cam.y, traffic_lamps_status, stone_status, flag,pause)
         

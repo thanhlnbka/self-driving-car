@@ -111,8 +111,12 @@ class Car(pygame.sprite.Sprite):
     def calculate_distance_lamp(self):
         for i in range(len(TRAFFIC_LAMP_POS)):
             pos = TRAFFIC_LAMP_POS[i]
+
             if self.current_nav_index < pos:
-                distance_to_lamp = math.hypot(self.MAP_NAVS[pos][0] - self.x, self.MAP_NAVS[pos][1] - self.y)
+                try:
+                    distance_to_lamp = math.hypot(self.MAP_NAVS[pos][0] - self.x, self.MAP_NAVS[pos][1] - self.y)
+                except:
+                    distance_to_lamp = 2000
                 if self.current_lamp_pos != i:
                     self.current_lamp_pos = i
                 return distance_to_lamp
@@ -165,15 +169,7 @@ class Car(pygame.sprite.Sprite):
     def update_acceleration(self, speed):
         off_set = speed - self.speed
         self.acceleration = off_set/10.0
-        # if speed < 0.1:
-        #     self.speed = speed
-        #     return
-        # if off_set > 0.1:
-        #     self.speed += 0.1
-        # elif off_set < -0.2:
-        #     self.speed -= 0.2
-        # else:
-        #     self.speed = speed
+
 
     def update_speed(self):
         self.speed += self.acceleration
@@ -183,13 +179,11 @@ class Car(pygame.sprite.Sprite):
             self.set_speed(0)
             return
         self.update_map_nav_index()
-        # print("Current index: ", self.current_nav_index)
         if self.current_nav_index < maps.FINISH_INDEX:
             way_dir = self.find_way_direction()
             self.change_dir(way_dir)
 
             if (flag % 10) == 0:
-                # distance_stone = self.calculate_distance_impediment(stone_status)
                 angle_tmp = self.calculator_car_angle()
 
                 stone_hide_view = stone_status[0]
@@ -197,50 +191,22 @@ class Car(pygame.sprite.Sprite):
                 if stone_hide_view == 1 and stone_pos <= TRAFFIC_LAMP_POS[self.current_lamp_pos]:
                     distance_stone = self.calculate_distance_impediment(stone_status)
                     speed_new = self.impediment_deductive.fuzzy_deductive(distance_stone, angle_tmp)
-                    # print("Distance to Stone: ", distance_stone)
-
-                    # self.speed = speed_new
-                    # self.update_speed(speed_new)
                     self.update_acceleration(speed_new)
-                    # print("Stone - Speed: ", self.speed)
-                    # print("--------------------------------------------------------------------------")
                 elif stone_hide_view == 1 and self.current_nav_index > TRAFFIC_LAMP_POS[self.current_lamp_pos]:
                     distance_stone = self.calculate_distance_impediment(stone_status)
                     speed_new = self.impediment_deductive.fuzzy_deductive(distance_stone, angle_tmp)
-                    # print("Distance to Stone: ", distance_stone)
-                    # self.speed = speed_new
-                    # self.update_speed(speed_new)
                     self.update_acceleration(speed_new)
-                    # print("Stone - Speed: ", self.speed)
-                    # print("--------------------------------------------------------------------------")
                 else:
                     distance_tmp = self.calculate_distance_lamp()
 
                     lamp_status_tmp = traffic_lamp_status[self.current_lamp_pos]
-                    # print("current lamp pos: ", self.current_lamp_pos, ", status: ", lamp_status_tmp)
-                    # print(distance_tmp, " - ", cal_distance_dependencies(distance_tmp))
-                    # print(angle_tmp, " - ", cal_angle_dependencies(angle_tmp))
-                    # print(lamp_status_tmp, " - ", cal_lamp_dependencies(lamp_status_tmp))
-
-                    # light = "red"
-                    # if lamp_status_tmp[1] == 1:
-                    #     light = "green"
-
-                    # print("lamp status: ", light, " - ", lamp_status_tmp[0], "s")
                     speed_new = self.light_deductive.fuzzy_deductive(distance_tmp, lamp_status_tmp, angle_tmp)
-                    # self.speed = speed_new
-                    # self.update_speed(speed_new)
                     self.update_acceleration(speed_new)
-                    # print("Traffic Lamp - Speed: ", self.speed)
-                    # print('{}:{}'.format(last_x, last_y))
-                    # print("--------------------------------------------------------------------------")
             self.update_speed()
 
         else:
             self.set_speed(0)
             return True
-        # print(self.find_way_direction())
-        # print(self.dir)
         self.x = self.x + self.speed * math.cos(math.radians(270 - self.dir))
         self.y = self.y + self.speed * math.sin(math.radians(270 - self.dir))
         return False
